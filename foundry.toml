@@ -1,0 +1,17 @@
+[default]
+src = 'src'
+out = 'out'
+libs = ['lib']
+remappings = [
+    'ds-test/=lib/ds-test/src/',
+    'forge-std/=lib/forge-std/src/',
+    'scripts/=script/',
+    'diamond-src/=src',
+    'diamond-facets/=src/facets/',
+    'diamond-init/=src/upgradeInitializers/',
+    'diamond-ifaces/=src/interfaces/',
+    'diamond-libs/=src/libraries/',
+    'test-facets/=test/facets/'
+]
+
+# See more config options https://github.com/gakonst/foundry/tree/master/config
