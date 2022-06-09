@@ -101,9 +101,11 @@ contract TestDiamond is TestHelper {
             functionSelectors: test1FacetSelectors
         }));
 
-        vm.prank(DIAMOND_OWNER);
+        vm.expectEmit(true, true, false, true);
+        emit LibDiamond.DiamondCut(facetCuts, address(0), bytes(''));
 
         // Diamond Cut
+        vm.prank(DIAMOND_OWNER);
         (success, ) = diamondAddress.call(
             abi.encodeWithSelector(
                 IDiamondCut.diamondCut.selector, 
@@ -114,7 +116,7 @@ contract TestDiamond is TestHelper {
         );
 
         assertTrue(success, "TEST_DIAMOND::CALL_FAILED");
-        
+
         // Test Facet add and facet function selectors matching
         (success, data) = diamondAddress.call(abi.encode(IDiamondLoupe.facetAddresses.selector));
         
@@ -146,6 +148,9 @@ contract TestDiamond is TestHelper {
             action: IDiamondCut.FacetCutAction.Add,
             functionSelectors: test1FacetSelectors
         }));
+
+        vm.expectEmit(true, true, false, true);
+        emit LibDiamond.DiamondCut(facetCuts, address(0), bytes(''));
 
         // Diamond Cut
         vm.prank(DIAMOND_OWNER);
@@ -197,6 +202,9 @@ contract TestDiamond is TestHelper {
             action: IDiamondCut.FacetCutAction.Add,
             functionSelectors: test2FacetSelectors
         }));
+
+        vm.expectEmit(true, true, false, true);
+        emit LibDiamond.DiamondCut(facetCuts, address(0), bytes(''));
 
         // Diamond Cut
         vm.prank(DIAMOND_OWNER);
@@ -259,7 +267,7 @@ contract TestDiamond is TestHelper {
 
         assertTrue(success, "TEST_DIAMOND::CALL_FAILED");
         assertEq(_getFacetSelectors(TEST1_FACET_ADDR).length, test1FacetSelectors.length);
-        
+
         // Test supportsInterface() replace
         delete facetCuts;
         facetCuts.push(IDiamondCut.FacetCut({
@@ -267,6 +275,9 @@ contract TestDiamond is TestHelper {
             action: IDiamondCut.FacetCutAction.Replace,
             functionSelectors: test1FacetSupportsInterfaceSelector
         }));
+
+        vm.expectEmit(true, true, false, true);
+        emit LibDiamond.DiamondCut(facetCuts, address(0), bytes(''));
 
         vm.prank(DIAMOND_OWNER);
         (success, ) = diamondAddress.call(
@@ -285,5 +296,33 @@ contract TestDiamond is TestHelper {
             keccak256(abi.encode(_getFacetSelectors(TEST1_FACET_ADDR))),
             keccak256(abi.encode(test1FacetSelectorsWithSupportsInterface))
         );
+    }
+
+    function testTransferOwnership() public {
+        bool success;
+        bytes memory data;
+
+        vm.expectEmit(true, true, false, false);
+        emit LibDiamond.OwnershipTransferred(DIAMOND_OWNER, DEFAULT_EOA);
+
+        vm.prank(DIAMOND_OWNER);
+        (success, ) = diamondAddress.call(
+            abi.encodeWithSelector(
+                OwnershipFacet.transferOwnership.selector,
+                DEFAULT_EOA
+            )
+        );
+
+        assertTrue(success, "TEST_DIAMOND::CALL_FAILED");
+
+        (success, data) = diamondAddress.call(
+            abi.encode(OwnershipFacet.owner.selector)
+        );
+
+        assertTrue(success, "TEST_DIAMOND::CALL_FAILED");
+
+        address retVal = abi.decode(data, (address));
+
+        assertEq(retVal, DEFAULT_EOA);
     }
 }

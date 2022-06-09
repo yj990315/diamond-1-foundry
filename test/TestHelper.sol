@@ -15,6 +15,7 @@ abstract contract TestHelper is Test {
     uint256 internal immutable STANDARD_FACET_COUNT;
     address internal immutable TEST1_FACET_ADDR;
     address internal immutable TEST2_FACET_ADDR;
+    address internal immutable DEFAULT_EOA;
     address internal immutable CACHE_BUG_TEST_FACET_ADDR;
 
     address[] internal deployedContracts;
@@ -85,6 +86,7 @@ abstract contract TestHelper is Test {
         STANDARD_FACET_COUNT = 3;
         TEST1_FACET_ADDR = address(new Test1Facet());
         TEST2_FACET_ADDR = address(new Test2Facet());
+        DEFAULT_EOA = address(0xDeFa);
         CACHE_BUG_TEST_FACET_ADDR = address(new CacheBugTestFacet());
     }
 
