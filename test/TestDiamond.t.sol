@@ -58,37 +58,21 @@ contract TestDiamond is TestHelper {
     }
 
     function testSelectorsAreCorrectlyAssociatedToLoupeFacet() public {
-        assertEq(
-            _getFacetByFunctionSelector(DiamondLoupeFacet.facets.selector), 
-            loupeFacetAddress
-        );
-        assertEq(
-            _getFacetByFunctionSelector(DiamondLoupeFacet.facetFunctionSelectors.selector), 
-            loupeFacetAddress
-        );
-        assertEq(
-            _getFacetByFunctionSelector(DiamondLoupeFacet.facetAddresses.selector), 
-            loupeFacetAddress
-        );
-        assertEq(
-            _getFacetByFunctionSelector(DiamondLoupeFacet.facetAddress.selector), 
-            loupeFacetAddress
-        );
-        assertEq(
-            _getFacetByFunctionSelector(DiamondLoupeFacet.supportsInterface.selector), 
-            loupeFacetAddress
-        );
+        for (uint256 i; i < loupeFacetSelectors.length; ++i) {
+            assertEq(
+                _getFacetByFunctionSelector(loupeFacetSelectors[i]), 
+                loupeFacetAddress
+            );
+        }
     }
 
     function testSelectorsAreCorrectlyAssociatedToOwnershipFacet() public {
-        assertEq(
-            _getFacetByFunctionSelector(OwnershipFacet.owner.selector), 
-            ownershipFacetAddress
-        );
-        assertEq(
-            _getFacetByFunctionSelector(OwnershipFacet.transferOwnership.selector), 
-            ownershipFacetAddress
-        );
+        for (uint256 i; i < ownershipFacetSelectors.length; ++i) {
+            assertEq(
+                _getFacetByFunctionSelector(ownershipFacetSelectors[i]), 
+                ownershipFacetAddress
+            );
+        }
     }
 
     function testAddAllFacet1FunctionSelectorsAndCall() public {
